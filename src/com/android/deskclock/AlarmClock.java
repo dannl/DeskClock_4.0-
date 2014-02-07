@@ -69,8 +69,12 @@ public class AlarmClock extends Activity implements OnItemClickListener {
     }
 
     private class AlarmTimeAdapter extends CursorAdapter {
+
+        private String[] mText;
+
         public AlarmTimeAdapter(Context context, Cursor cursor) {
             super(context, cursor);
+            mText = context.getResources().getStringArray(R.array.alarm_type_choices);
         }
 
         @Override
@@ -116,11 +120,20 @@ public class AlarmClock extends Activity implements OnItemClickListener {
                     (TextView) digitalClock.findViewById(R.id.daysOfWeek);
             final String daysOfWeekStr =
                     alarm.daysOfWeek.toString(AlarmClock.this, false);
+            TextView typeView =
+                    (TextView) view.findViewById(R.id.week_type);
             if (daysOfWeekStr != null && daysOfWeekStr.length() != 0) {
                 daysOfWeekView.setText(daysOfWeekStr);
                 daysOfWeekView.setVisibility(View.VISIBLE);
+                if (alarm.weekType == 0) {
+                    typeView.setVisibility(View.GONE);
+                } else {
+                    typeView.setVisibility(View.VISIBLE);
+                    typeView.setText(mText[alarm.weekType]);
+                }
             } else {
                 daysOfWeekView.setVisibility(View.GONE);
+                typeView.setVisibility(View.GONE);
             }
 
             // Display the label
@@ -132,6 +145,8 @@ public class AlarmClock extends Activity implements OnItemClickListener {
             } else {
                 labelView.setVisibility(View.GONE);
             }
+
+
         }
     };
 

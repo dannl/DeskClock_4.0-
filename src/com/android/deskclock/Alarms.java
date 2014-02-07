@@ -680,9 +680,11 @@ public class Alarms {
      */
     static void saveNextAlarm(final Context context, String timeString) {
         Settings.System.putString(context.getContentResolver(),
-                                  Settings.System.NEXT_ALARM_FORMATTED,
+                NEXT_ALARM_FORMATED,
                                   timeString);
     }
+
+    public static final String NEXT_ALARM_FORMATED = "baina_next_alarm_formated";
 
     /**
      * @return true if clock is set to 24-hour mode

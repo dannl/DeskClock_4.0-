@@ -315,7 +315,7 @@ public class DeskClock extends Activity {
         if (mNextAlarm == null) return;
 
         String nextAlarm = Settings.System.getString(getContentResolver(),
-                Settings.System.NEXT_ALARM_FORMATTED);
+                Alarms.NEXT_ALARM_FORMATED);
         if (!TextUtils.isEmpty(nextAlarm)) {
             mNextAlarm.setText(getString(R.string.control_set_alarm_with_existing, nextAlarm));
             mNextAlarm.setVisibility(View.VISIBLE);

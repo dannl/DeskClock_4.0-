@@ -160,7 +160,7 @@
     <string name="clock_instructions">Choose a clock</string>
 
     <!-- Label for analog clock gadget, shown in list of all gadgets -->
-    <string name="analog_gadget">Analog clock</string>
+    <string name="analog_gadget">Baina clock</string>
 
     <!-- Menu item title for general Alarm Clock Settings -->
     <string name="settings">Settings</string>
