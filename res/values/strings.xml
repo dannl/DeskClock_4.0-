@@ -4,9 +4,9 @@
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-  
+
           http://www.apache.org/licenses/LICENSE-2.0
-  
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- -->
     <!-- Label shown on launcher icon -->
-    <string name="app_label">Clock</string>
+    <string name="app_label">Baina Clock</string>
 
     <!-- Title for AlarmClock activity -->
     <string name="alarm_list_title">Alarms</string>
@@ -63,6 +63,20 @@
 
     <!-- Setting labels on Set alarm screen: Repeat -->
     <string name="alarm_repeat">Repeat</string>
+
+    <string name="alarm_type">Type</string>
+
+    <string-array name="alarm_type_choices">
+        <item>Normal</item>
+        <item>6-days week</item>
+        <item>5-days week</item>
+    </string-array>
+
+    <string-array name="alarm_type_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 
     <!-- Setting labels on Set alarm screen: Select alarm ringtone  -->
     <string name="alert">Ringtone</string>
@@ -303,6 +317,8 @@
 
     <!-- Label on the main screen control used to set alarm when there is already an existing alarm [CHAR LIMIT=30]-->
     <string name="control_set_alarm_with_existing">Alarm set: <xliff:g id="time">%s</xliff:g></string>
+
+    <string name="alarm_type_disabled_msg">Alarm type would be enabled if the alarm is set to be repeated.</string>
 
 </resources>
 

@@ -36,8 +36,8 @@ public class AlarmProvider extends ContentProvider {
             UriMatcher.NO_MATCH);
 
     static {
-        sURLMatcher.addURI("com.android.deskclock", "alarm", ALARMS);
-        sURLMatcher.addURI("com.android.deskclock", "alarm/#", ALARMS_ID);
+        sURLMatcher.addURI("com.baina.deskclock", "alarm", ALARMS);
+        sURLMatcher.addURI("com.baina.deskclock", "alarm/#", ALARMS_ID);
     }
 
     public AlarmProvider() {

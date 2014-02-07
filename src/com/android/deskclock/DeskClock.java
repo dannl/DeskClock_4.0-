@@ -17,7 +17,6 @@
 package com.android.deskclock;
 
 import static android.os.BatteryManager.BATTERY_STATUS_UNKNOWN;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -59,7 +58,7 @@ import android.widget.AbsoluteLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.baina.deskclock.R;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;

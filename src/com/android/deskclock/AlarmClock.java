@@ -40,7 +40,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import com.baina.deskclock.R;
 import java.util.Calendar;
 
 /**
@@ -64,7 +64,7 @@ public class AlarmClock extends Activity implements OnItemClickListener {
         Alarms.enableAlarm(this, alarm.id, enabled);
         if (enabled) {
             SetAlarm.popAlarmSetToast(this, alarm.hour, alarm.minutes,
-                    alarm.daysOfWeek);
+                    alarm.daysOfWeek, alarm.weekType);
         }
     }
 
@@ -169,7 +169,7 @@ public class AlarmClock extends Activity implements OnItemClickListener {
                 Alarms.enableAlarm(this, alarm.id, !alarm.enabled);
                 if (!alarm.enabled) {
                     SetAlarm.popAlarmSetToast(this, alarm.hour, alarm.minutes,
-                            alarm.daysOfWeek);
+                            alarm.daysOfWeek, alarm.weekType);
                 }
                 return true;
             }

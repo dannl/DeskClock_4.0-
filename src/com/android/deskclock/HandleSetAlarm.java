@@ -34,6 +34,8 @@ import java.util.Calendar;
 
 public class HandleSetAlarm extends Activity {
 
+    public static final String EXTRA_WEEK_TYPE = "week_type";
+
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -54,6 +56,7 @@ public class HandleSetAlarm extends Activity {
         final int minutes = intent.getIntExtra(EXTRA_MINUTES,
                 calendar.get(Calendar.MINUTE));
         final boolean skipUi = intent.getBooleanExtra(EXTRA_SKIP_UI, false);
+        final int weekType = intent.getIntExtra(EXTRA_WEEK_TYPE, 0);
         String message = intent.getStringExtra(EXTRA_MESSAGE);
         if (message == null) {
             message = "";
@@ -61,13 +64,14 @@ public class HandleSetAlarm extends Activity {
 
         Cursor c = null;
         long timeInMillis = Alarms.calculateAlarm(hour, minutes,
-                new Alarm.DaysOfWeek(0)).getTimeInMillis();
+                new Alarm.DaysOfWeek(0), weekType).getTimeInMillis();
         try {
             c = getContentResolver().query(
                     Alarm.Columns.CONTENT_URI,
                     Alarm.Columns.ALARM_QUERY_COLUMNS,
                     Alarm.Columns.HOUR + "=" + hour + " AND " +
                     Alarm.Columns.MINUTES + "=" + minutes + " AND " +
+                    Alarm.Columns.WEEK_TYPE + "=" + weekType + " AND " +
                     Alarm.Columns.DAYS_OF_WEEK + "=0 AND " +
                     Alarm.Columns.MESSAGE + "=?",
                     new String[] { message }, null);
@@ -89,6 +93,7 @@ public class HandleSetAlarm extends Activity {
         values.put(Alarm.Columns.VIBRATE, 1);
         values.put(Alarm.Columns.DAYS_OF_WEEK, 0);
         values.put(Alarm.Columns.ALARM_TIME, timeInMillis);
+        values.put(Alarm.Columns.WEEK_TYPE, weekType);
 
         ContentResolver cr = getContentResolver();
         Uri result = cr.insert(Alarm.Columns.CONTENT_URI, values);

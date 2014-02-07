@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 import android.preference.RingtonePreference;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import com.baina.deskclock.R;
 
 /**
  * The RingtonePreference does not have a way to get/set the current ringtone so

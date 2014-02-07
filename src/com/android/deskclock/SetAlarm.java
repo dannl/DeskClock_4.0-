@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
@@ -36,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import com.baina.deskclock.R;
 
 /**
  * Manages each alarm
@@ -52,6 +54,7 @@ public class SetAlarm extends PreferenceActivity implements Preference.OnPrefere
     private AlarmPreference mAlarmPref;
     private CheckBoxPreference mVibratePref;
     private RepeatPreference mRepeatPref;
+    private ListPreference mIntervalPref;
 
     private int     mId;
     private int     mHour;
@@ -83,6 +86,8 @@ public class SetAlarm extends PreferenceActivity implements Preference.OnPrefere
         mAlarmPref.setOnPreferenceChangeListener(this);
         mVibratePref = (CheckBoxPreference) findPreference("vibrate");
         mVibratePref.setOnPreferenceChangeListener(this);
+        mIntervalPref = (ListPreference) findPreference("interval");
+        mIntervalPref.setOnPreferenceChangeListener(this);
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (!v.hasVibrator()) {
             getPreferenceScreen().removePreference(mVibratePref);
@@ -187,10 +192,28 @@ public class SetAlarm extends PreferenceActivity implements Preference.OnPrefere
                 if (p != mEnabledPref) {
                     mEnabledPref.setChecked(true);
                 }
+                if (p == mRepeatPref) {
+                    updateTypePref();
+                }
                 saveAlarm(null);
             }
         });
         return true;
+    }
+
+
+    /**
+     *
+     */
+    private void updateTypePref() {
+        boolean enable = mRepeatPref.getDaysOfWeek().getCoded() != 0;
+        mIntervalPref.setEnabled(enable);
+        if (enable) {
+            mIntervalPref.setSummary(mIntervalPref.getEntry());
+        } else {
+            mIntervalPref.setSummary(R.string.alarm_type_disabled_msg);
+        }
+
     }
 
     private void updatePrefs(Alarm alarm) {
@@ -203,6 +226,8 @@ public class SetAlarm extends PreferenceActivity implements Preference.OnPrefere
         mVibratePref.setChecked(alarm.vibrate);
         // Give the alert uri to the preference.
         mAlarmPref.setAlert(alarm.alert);
+        mIntervalPref.setValue(String.valueOf(alarm.weekType));
+        updateTypePref();
         updateTime();
     }
 
@@ -256,7 +281,7 @@ public class SetAlarm extends PreferenceActivity implements Preference.OnPrefere
 
     private void updateTime() {
         mTimePref.setSummary(Alarms.formatTime(this, mHour, mMinute,
-                mRepeatPref.getDaysOfWeek()));
+                mRepeatPref.getDaysOfWeek(), Integer.valueOf(mIntervalPref.getValue())));
     }
 
     private long saveAlarm(Alarm alarm) {
@@ -286,6 +311,7 @@ public class SetAlarm extends PreferenceActivity implements Preference.OnPrefere
         alarm.vibrate = mVibratePref.isChecked();
         alarm.label = mLabel.getText().toString();
         alarm.alert = mAlarmPref.getAlert();
+        alarm.weekType = Integer.valueOf(mIntervalPref.getValue());
         return alarm;
     }
 
@@ -319,9 +345,9 @@ public class SetAlarm extends PreferenceActivity implements Preference.OnPrefere
      * goes off.  This helps prevent "am/pm" mistakes.
      */
     static void popAlarmSetToast(Context context, int hour, int minute,
-                                 Alarm.DaysOfWeek daysOfWeek) {
+                                 Alarm.DaysOfWeek daysOfWeek, int weekType) {
         popAlarmSetToast(context,
-                Alarms.calculateAlarm(hour, minute, daysOfWeek)
+                Alarms.calculateAlarm(hour, minute, daysOfWeek, weekType)
                 .getTimeInMillis());
     }
 

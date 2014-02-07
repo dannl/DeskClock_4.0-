@@ -23,7 +23,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
-
+import com.baina.deskclock.R;
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
 
@@ -58,6 +58,7 @@ public final class Alarm implements Parcelable {
         p.writeString(label);
         p.writeParcelable(alert, flags);
         p.writeInt(silent ? 1 : 0);
+        p.writeInt(weekType);
     }
     //////////////////////////////
     // end Parcelable apis
@@ -71,7 +72,7 @@ public final class Alarm implements Parcelable {
          * The content:// style URL for this table
          */
         public static final Uri CONTENT_URI =
-                Uri.parse("content://com.android.deskclock/alarm");
+                Uri.parse("content://com.baina.deskclock/alarm");
 
         /**
          * Hour in 24-hour localtime 0 - 23.
@@ -123,6 +124,11 @@ public final class Alarm implements Parcelable {
         public static final String ALERT = "alert";
 
         /**
+         * week type for baina.
+         */
+        public static final String WEEK_TYPE = "week_type";
+
+        /**
          * The default sort order for this table
          */
         public static final String DEFAULT_SORT_ORDER =
@@ -133,7 +139,7 @@ public final class Alarm implements Parcelable {
 
         static final String[] ALARM_QUERY_COLUMNS = {
             _ID, HOUR, MINUTES, DAYS_OF_WEEK, ALARM_TIME,
-            ENABLED, VIBRATE, MESSAGE, ALERT };
+            ENABLED, VIBRATE, MESSAGE, ALERT, WEEK_TYPE };
 
         /**
          * These save calls to cursor.getColumnIndexOrThrow()
@@ -148,6 +154,7 @@ public final class Alarm implements Parcelable {
         public static final int ALARM_VIBRATE_INDEX = 6;
         public static final int ALARM_MESSAGE_INDEX = 7;
         public static final int ALARM_ALERT_INDEX = 8;
+        public static final int ALARM_WEEK_TYPE_INDEX = 9;
     }
     //////////////////////////////
     // End column definitions
@@ -164,6 +171,7 @@ public final class Alarm implements Parcelable {
     public String     label;
     public Uri        alert;
     public boolean    silent;
+    public int    weekType;
 
     public Alarm(Cursor c) {
         id = c.getInt(Columns.ALARM_ID_INDEX);
@@ -192,6 +200,7 @@ public final class Alarm implements Parcelable {
                         RingtoneManager.TYPE_ALARM);
             }
         }
+        weekType = c.getInt(Columns.ALARM_WEEK_TYPE_INDEX);
     }
 
     public Alarm(Parcel p) {
@@ -205,6 +214,7 @@ public final class Alarm implements Parcelable {
         label = p.readString();
         alert = (Uri) p.readParcelable(null);
         silent = p.readInt() == 1;
+        weekType = p.readInt();
     }
 
     // Creates a default alarm at the current time.
@@ -217,6 +227,7 @@ public final class Alarm implements Parcelable {
         vibrate = true;
         daysOfWeek = new DaysOfWeek(0);
         alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        weekType = 0;
     }
 
     public String getLabelOrDefault(Context context) {

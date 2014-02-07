@@ -26,6 +26,14 @@
         android:persistent="false"
         android:key="setRepeat"
         android:title="@string/alarm_repeat" />
+    <com.android.deskclock.IntervalPreference
+        android:persistent="false"
+        android:key="interval"
+        android:title="@string/alarm_type"
+        android:entries="@array/alarm_type_choices"
+        android:entryValues="@array/alarm_type_values"
+        android:defaultValue="0"
+        />
     <com.android.deskclock.AlarmPreference
         android:key="alarm"
         android:title="@string/alert"

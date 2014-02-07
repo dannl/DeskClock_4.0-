@@ -37,6 +37,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import java.lang.Runnable;
 import android.util.Log;
+import com.baina.deskclock.R;
 
 public class Screensaver extends Activity {
     static final boolean DEBUG = false;

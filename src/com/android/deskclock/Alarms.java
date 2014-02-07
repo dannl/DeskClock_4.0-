@@ -16,12 +16,13 @@
 
 package com.android.deskclock;
 
+import com.baina.deskclock.R;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,7 +31,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.provider.Settings;
 import android.text.format.DateFormat;
-
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
@@ -165,6 +165,7 @@ public class Alarms {
         // A null alert Uri indicates a silent alarm.
         values.put(Alarm.Columns.ALERT, alarm.alert == null ? ALARM_ALERT_SILENT
                 : alarm.alert.toString());
+        values.put(Alarm.Columns.WEEK_TYPE, alarm.weekType);
 
         return values;
     }
@@ -558,7 +559,7 @@ public class Alarms {
     }
 
     private static long calculateAlarm(Alarm alarm) {
-        return calculateAlarm(alarm.hour, alarm.minutes, alarm.daysOfWeek)
+        return calculateAlarm(alarm.hour, alarm.minutes, alarm.daysOfWeek, alarm.weekType)
                 .getTimeInMillis();
     }
 
@@ -567,7 +568,7 @@ public class Alarms {
      * setting in AlarmManager.
      */
     static Calendar calculateAlarm(int hour, int minute,
-            Alarm.DaysOfWeek daysOfWeek) {
+            Alarm.DaysOfWeek daysOfWeek, int weekType) {
 
         // start with now
         Calendar c = Calendar.getInstance();
@@ -588,12 +589,39 @@ public class Alarms {
 
         int addDays = daysOfWeek.getNextAlarm(c);
         if (addDays > 0) c.add(Calendar.DAY_OF_WEEK, addDays);
+        c.setTimeInMillis(calculateWithWeekTypes(c.getTimeInMillis(), weekType));
         return c;
     }
 
+
+    private static final long A_WEEK = 7 * 24 * 60 * 60 * 1000;
+
+    private static final long SMALL_WEEK_START;
+
+    static {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2014);
+        calendar.set(Calendar.MONTH, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, 20);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 1);
+        SMALL_WEEK_START = calendar.getTimeInMillis();
+    }
+
+    private static final long calculateWithWeekTypes(long timeMill, int weekType) {
+        long weeks = (timeMill - SMALL_WEEK_START) / A_WEEK;
+        boolean isSmall = weeks % 2 == 0;
+        if ((isSmall && weekType == 2) || (!isSmall && weekType == 1)) {
+            return timeMill + A_WEEK;
+        }
+        return timeMill;
+    }
+
     static String formatTime(final Context context, int hour, int minute,
-                             Alarm.DaysOfWeek daysOfWeek) {
-        Calendar c = calculateAlarm(hour, minute, daysOfWeek);
+                             Alarm.DaysOfWeek daysOfWeek, int weekType) {
+        Calendar c = calculateAlarm(hour, minute, daysOfWeek, weekType);
         return formatTime(context, c);
     }
 
@@ -609,6 +637,41 @@ public class Alarms {
     private static String formatDayAndTime(final Context context, Calendar c) {
         String format = get24HourMode(context) ? DM24 : DM12;
         return (c == null) ? "" : (String)DateFormat.format(format, c);
+    }
+
+    /**
+     * format "Alarm set for 2 days 7 hours and 53 minutes from
+     * now"
+     */
+    private static String formatToast(Context context, long timeInMillis) {
+        long delta = timeInMillis - System.currentTimeMillis();
+        long hours = delta / (1000 * 60 * 60);
+        long minutes = delta / (1000 * 60) % 60;
+        long days = hours / 24;
+        hours = hours % 24;
+
+        String daySeq = (days == 0) ? "" :
+                (days == 1) ? context.getString(R.string.day) :
+                        context.getString(R.string.days, Long.toString(days));
+
+        String minSeq = (minutes == 0) ? "" :
+                (minutes == 1) ? context.getString(R.string.minute) :
+                        context.getString(R.string.minutes, Long.toString(minutes));
+
+        String hourSeq = (hours == 0) ? "" :
+                (hours == 1) ? context.getString(R.string.hour) :
+                        context.getString(R.string.hours, Long.toString(hours));
+
+        boolean dispDays = days > 0;
+        boolean dispHour = hours > 0;
+        boolean dispMinute = minutes > 0;
+
+        int index = (dispDays ? 1 : 0) |
+                (dispHour ? 2 : 0) |
+                (dispMinute ? 4 : 0);
+
+        String[] formats = context.getResources().getStringArray(R.array.alarm_set);
+        return String.format(formats[index], daySeq, hourSeq, minSeq);
     }
 
     /**

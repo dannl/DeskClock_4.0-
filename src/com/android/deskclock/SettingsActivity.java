@@ -28,6 +28,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.provider.Settings;
+import com.baina.deskclock.R;
 
 /**
  * Settings for the Alarm Clock.

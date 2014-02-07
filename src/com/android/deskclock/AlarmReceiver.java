@@ -27,6 +27,7 @@ import android.content.BroadcastReceiver;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.PowerManager.WakeLock;
+import com.baina.deskclock.R;
 
 /**
  * Glue class: connects AlarmAlert IntentReceiver to AlarmAlert

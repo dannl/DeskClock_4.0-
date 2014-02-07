@@ -17,7 +17,7 @@
 package com.android.alarmclock;
 
 import com.android.deskclock.AlarmClock;
-import com.android.deskclock.R;
+import com.baina.deskclock.R;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
